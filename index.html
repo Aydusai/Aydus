@@ -8,7 +8,9 @@
     <title>aydus</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;0,700;1,400;1,500&display=swap"
+        rel="stylesheet">
     <style>
         body {
             margin: 0;
@@ -34,7 +36,7 @@
         }
 
         .logo {
-            width: 240px;
+            width: 160px;
             max-width: 100%;
             height: auto;
         }
@@ -44,7 +46,7 @@
         }
 
         h2 {
-            font-size: 1.5em;
+            font-size: 1.25em;
             font-weight: bold;
             margin: 0 0 16px 0;
             color: #000000;
@@ -56,10 +58,17 @@
             font-weight: 500;
             margin: 0 0 16px 0;
             color: #000000;
+            line-height: 1.45;
         }
 
         p:last-child {
             margin-bottom: 0;
+        }
+
+        @media (min-width: 601px) {
+            .nowrap-desktop {
+                white-space: nowrap;
+            }
         }
 
         @media (max-width: 600px) {
@@ -72,17 +81,21 @@
             }
 
             .logo {
-                width: 180px;
+                width: 140px;
+            }
+
+            .section {
+                margin-bottom: 30px;
             }
 
             h2 {
-                font-size: 1.3em;
-                margin-bottom: 12px;
+                font-size: 1.15em;
+                margin-bottom: 6px;
             }
 
             p {
-                font-size: 1rem;
-                margin-bottom: 12px;
+                font-size: 0.95em;
+                margin-bottom: 10px;
             }
         }
     </style>
@@ -98,14 +111,14 @@
             <h2>Attention is the last scarce resource.</h2>
             <p>Building is commoditized. AI can write code, design the product, run the operation and soon most of it
                 will be free. There's one thing that is getting more and more difficult and expensive.<br>Human
-                attention.</p>
-            <p>There are still only 24 hours in a day, and more people are competing for them than ever before. When
+                attention.<br>There are still only 24 hours in a day, and more people are competing for them than ever
+                before. When
                 everything else falls to zero, attention is the last scarce resource on earth. That battle is being
                 fought on social media platforms.</p>
         </div>
 
         <div class="section">
-            <h2 style="white-space: nowrap;">The ones who command it are the most valuable people alive.</h2>
+            <h2 class="nowrap-desktop">The ones who command it are the most valuable people alive.</h2>
             <p>Attention can be engineered.<br>20 years from now, the ones who know how to drive the attention of 100M
                 users at will, are going to be the most valuable individuals.</p>
         </div>
@@ -113,7 +126,7 @@
         <div class="section">
             <h2>We operate at the edge of distribution.</h2>
             <p>The average valuation of companies we work with is $5B.<br>For our clients, we are kingmakers who win
-                attention, mindshare and customers for them.<br>We are not building a company. We're building an
+                attention, mindshare and markets for them.<br>We are not building a company. We're building an
                 institution of people who define how attention is won over the next 20 years.</p>
         </div>
     </div>
