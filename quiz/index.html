@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Emoji Compliance Certification — Article 752</title>
+
+<!-- ============================================================
+     INTEGRATION NOTES FOR THE DEVELOPER
+     ------------------------------------------------------------
+     1. All wording lives in the QUIZ_CONFIG block below. Do not
+        edit copy in the markup or render code.
+     2. Set entryFormUrl and brandPageUrl in meta.
+     3. Analytics: implement window.onQuizEvent(name, data) anywhere
+        on the page. It fires for: 'quiz_start', 'question_answered'
+        ({index, emoji, correct}), 'quiz_complete' ({score,total,perfect}),
+        'entry_claimed' ({score}), 'brand_click', 'share'.
+     4. Only the question prompt is themed as a Slack message; the
+        surrounding certification UI is plain. No build, no deps.
+     ============================================================ -->
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800;900&family=Inter:wght@400;500;600&family=Lato:wght@400;700;900&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f3f4f0; --card:#ffffff; --ink:#15171c; --ink-soft:#4a4f5c;
+    --line:#d9dbd3; --accent:#3d2bff; --accent-ink:#2419c2;
+    --amber:#b86a00; --amber-bg:#fff4e0; --green:#1f7a4d; --red:#b3261e; --stamp:#b3261e;
+    --shadow:0 1px 0 var(--line), 0 12px 30px -18px rgba(20,23,28,.4);
+    /* Slack message palette */
+    --sk-ink:#1d1c1d; --sk-soft:#616061; --sk-faint:#868686; --sk-line:#e8e8e8;
+    --sk-hover:#f8f8f8; --sk-pill:#dddddd; --sk-blue:#1264a3; --sk-blue-bg:#e8f5fa; --sk-blue-line:#1d9bd1;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+  body{min-height:100vh;display:flex;justify-content:center;padding:0 18px 60px}
+  .wrap{width:100%;max-width:680px}
+  .gov-bar{display:flex;align-items:center;gap:10px;justify-content:space-between;border-bottom:1px solid var(--line);padding:14px 2px;margin-bottom:22px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft)}
+  .gov-bar .seal{display:flex;align-items:center;gap:9px;color:var(--ink)}
+  .seal-mark{width:22px;height:22px;border:2px solid var(--ink);border-radius:50%;display:grid;place-items:center;font-size:11px}
+  .gov-bar .ref{color:var(--accent);font-weight:700}
+  .module-tag{font-family:'JetBrains Mono',monospace;font-size:12px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:14px}
+  h1{font-family:'Archivo',sans-serif;font-weight:900;font-size:clamp(34px,7vw,54px);line-height:.96;letter-spacing:-.02em;margin-bottom:18px}
+  h1 em{font-style:normal;color:var(--accent)}
+  .lede{font-size:17px;line-height:1.5;color:var(--ink-soft);max-width:52ch;margin-bottom:26px}
+  .lede strong{color:var(--ink);font-weight:600}
+  .notice{border:1px solid var(--line);background:var(--card);border-radius:14px;padding:18px 20px;box-shadow:var(--shadow);margin-bottom:26px}
+  .notice-head{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:10px}
+  .notice ul{list-style:none;display:flex;flex-direction:column;gap:9px}
+  .notice li{font-size:14.5px;color:var(--ink-soft);padding-left:22px;position:relative;line-height:1.45}
+  .notice li:before{content:"\00A7";position:absolute;left:0;top:0;color:var(--accent);font-weight:700;font-family:'Archivo',sans-serif}
+  .notice li b{color:var(--ink)} .prize{font-family:'Archivo';font-weight:800}
+  .btn{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;letter-spacing:.01em;background:var(--accent);color:#fff;border:none;border-radius:11px;padding:15px 26px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background .12s;box-shadow:0 8px 20px -10px var(--accent)}
+  .btn:hover{transform:translateY(-1px);background:var(--accent-ink)} .btn:active{transform:translateY(0)}
+  .btn.ghost{background:transparent;color:var(--accent);box-shadow:none;border:1.5px solid var(--accent);padding:13px 24px}
+  .btn.ghost:hover{background:#ecebff} .btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+  .btn:focus-visible,.opt:focus-visible{outline:3px solid #b8b3ff;outline-offset:2px}
+  .progress{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:18px}
+  .pmeta{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);white-space:nowrap}
+  .pmeta b{color:var(--accent)}
+  .track{flex:1;height:6px;background:var(--line);border-radius:99px;overflow:hidden}
+  .fill{height:100%;width:0;background:var(--accent);border-radius:99px;transition:width .45s cubic-bezier(.4,0,.2,1)}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:24px 22px;animation:rise .4s ease both}
+  @keyframes rise{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+  .qkicker{font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:14px}
+  .qkicker .chip{background:var(--amber-bg);color:var(--amber);padding:3px 8px;border-radius:6px;font-weight:700}
+  .qkicker .chip.final{background:#ecebff;color:var(--accent)}
+
+  /* ---------- Slack message (the question itself) ---------- */
+  .slack{font-family:'Lato','Inter',sans-serif;border:1px solid var(--sk-line);border-radius:10px;background:#fff;padding:12px 14px 13px;margin-bottom:18px;display:flex;gap:10px;position:relative}
+  .slack:before{content:"#emoji-compliance";position:absolute;top:-9px;left:14px;background:#fff;border:1px solid var(--sk-line);border-radius:6px;padding:1px 7px;font-family:'JetBrains Mono',monospace;font-size:9.5px;letter-spacing:.06em;color:var(--sk-faint)}
+  .slack .s-av{width:38px;height:38px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;color:#fff;font-weight:900;font-size:14px;font-family:'Lato',sans-serif}
+  .slack .s-body{min-width:0;flex:1}
+  .slack .s-head{display:flex;align-items:baseline;gap:8px;margin-bottom:2px;flex-wrap:wrap}
+  .slack .s-name{font-family:'Lato',sans-serif;font-weight:900;font-size:15px;color:var(--sk-ink)}
+  .slack .s-time{font-size:12px;color:var(--sk-faint)}
+  .slack .s-msg{font-size:15px;line-height:1.46;color:var(--sk-ink);word-wrap:break-word}
+  .slack .s-msg em{font-style:italic;color:var(--sk-soft)}
+  .slack .s-rxns{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+  .slack .s-pill{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--sk-blue-line);background:var(--sk-blue-bg);border-radius:99px;padding:1px 9px 1px 7px;font-size:12.5px;font-weight:700;color:var(--sk-blue);line-height:1.7}
+  .slack .s-pill .pe{font-size:15px;line-height:1}
+
+  .qprompt{font-family:'Archivo';font-weight:800;font-size:18px;margin-bottom:16px;line-height:1.25}
+  .opts{display:grid;grid-template-columns:1fr 1fr;gap:11px}
+  @media(max-width:460px){.opts{grid-template-columns:1fr}}
+  .opt{display:flex;align-items:center;gap:12px;text-align:left;background:#fbfbf9;border:1.5px solid var(--line);border-radius:12px;padding:14px 15px;cursor:pointer;font-family:'Inter';font-size:14px;font-weight:600;color:var(--ink);transition:border-color .12s,background .12s,transform .1s}
+  .opt:hover{border-color:#b9b4ff;background:#fff;transform:translateY(-1px)}
+  .opt .e{font-size:26px;line-height:1;flex-shrink:0} .opt.sel{border-color:var(--accent);background:#f2f1ff} .opt.dim{opacity:.45}
+  .opts.locked .opt{cursor:default} .opts.locked .opt:hover{transform:none}
+  .reaction{margin-top:16px;border:1px solid var(--line);background:#faf9f6;border-radius:12px;padding:14px 16px;display:flex;gap:12px;align-items:flex-start;animation:rise .3s ease both}
+  .reaction .face{width:34px;height:34px;border-radius:9px;flex-shrink:0;display:grid;place-items:center;font-family:'Archivo';font-weight:900;font-size:14px;color:#fff}
+  .face.greg{background:#c2410c} .face.mina{background:#1e40af}
+  .reaction .body .name{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-soft);margin-bottom:3px}
+  .reaction .body .line{font-size:14.5px;line-height:1.45;color:var(--ink)} .reaction .body .line em{font-style:italic;color:var(--ink-soft)}
+  .footrow{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px}
+  .nostalk{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:#9aa0ac;letter-spacing:.06em}
+  .result{text-align:center;background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);padding:34px 26px 30px;position:relative;overflow:hidden;animation:rise .5s ease both}
+  .stamp{position:absolute;top:18px;right:-8px;font-family:'Archivo';font-weight:900;font-size:13px;letter-spacing:.1em;color:var(--stamp);border:3px solid var(--stamp);padding:6px 14px;border-radius:8px;transform:rotate(11deg);opacity:.9;text-transform:uppercase}
+  .stamp.pass{color:var(--green);border-color:var(--green)}
+  .score-num{font-family:'Archivo';font-weight:900;font-size:64px;line-height:1;letter-spacing:-.03em}
+  .score-of{font-family:'JetBrains Mono';font-size:13px;letter-spacing:.1em;color:var(--ink-soft);margin:6px 0 18px}
+  .rank{font-family:'Archivo';font-weight:900;font-size:26px;margin-bottom:12px;letter-spacing:-.01em}
+  .verdict{font-size:15.5px;line-height:1.55;color:var(--ink-soft);max-width:44ch;margin:0 auto 22px} .verdict b{color:var(--ink)}
+  .prizebox{border:1px dashed var(--accent);background:#f4f3ff;border-radius:14px;padding:18px 18px 20px;margin:0 auto 22px;max-width:420px}
+  .prizebox .ph{font-family:'JetBrains Mono';font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:700;margin-bottom:6px}
+  .prizebox .pbig{font-family:'Archivo';font-weight:900;font-size:30px;margin-bottom:6px}
+  .prizebox .psub{font-size:13.5px;color:var(--ink-soft);line-height:1.45}
+  .code{font-family:'JetBrains Mono';font-weight:700;background:#fff;border:1px solid var(--line);border-radius:8px;padding:8px 12px;display:inline-block;margin-top:10px;letter-spacing:.1em;color:var(--accent)}
+  .reviewlist{text-align:left;max-width:480px;margin:0 auto 24px}
+  .reviewlist .rli{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+  .reviewlist .rli .rq{flex:1;color:var(--ink-soft)} .reviewlist .rli .ra{font-weight:700;display:flex;align-items:center;gap:6px} .reviewlist .rli .mark{font-size:16px}
+  .ok{color:var(--green)} .no{color:var(--red)}
+  .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+  .brandfoot{margin-top:30px;text-align:center;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;color:#9aa0ac;text-transform:uppercase}
+
+  /* ---------- Registration form (collects details -> Google Form/Sheet) ---------- */
+  .reg{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px 24px;animation:rise .4s ease both}
+  .reg h2{font-family:'Archivo';font-weight:900;font-size:25px;letter-spacing:-.01em;margin-bottom:7px}
+  .reg .sub{font-size:14.5px;color:var(--ink-soft);line-height:1.5;margin-bottom:18px;max-width:52ch}
+  .reg .sub b{color:var(--ink);font-weight:600}
+  .scorenote{font-family:'JetBrains Mono',monospace;font-size:11.5px;letter-spacing:.04em;color:var(--ink-soft);background:#f4f3ff;border:1px solid #ddd6ff;border-radius:11px;padding:11px 13px;margin-bottom:20px;display:flex;align-items:center;gap:9px;line-height:1.4}
+  .field{margin-bottom:15px}
+  .field label{display:block;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft);font-weight:700;margin-bottom:6px}
+  .field label .req{color:var(--red)}
+  .field input,.field select{width:100%;font-family:'Inter';font-size:15px;color:var(--ink);background:#fbfbf9;border:1.5px solid var(--line);border-radius:11px;padding:12px 13px;transition:border-color .12s,background .12s;appearance:none;-webkit-appearance:none}
+  .field select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%234a4f5c' d='M1 1l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:34px}
+  .field input:focus,.field select:focus{outline:none;border-color:var(--accent);background:#fff}
+  .field.err input,.field.err select{border-color:var(--red);background:#fdeeee}
+  .field .msg{font-size:12px;color:var(--red);margin-top:5px;display:none}
+  .field.err .msg{display:block}
+  .grid2{display:grid;grid-template-columns:1fr 1.35fr;gap:12px}
+  @media(max-width:460px){.grid2{grid-template-columns:1fr}}
+  .privacy{font-size:11.5px;color:#9aa0ac;margin-top:14px;line-height:1.45;text-align:center}
+  .reg-done{text-align:center;padding:8px 0 4px}
+  .reg-done .big{font-family:'Archivo';font-weight:900;font-size:22px;margin-bottom:8px}
+
+  .hidden{display:none}
+  .err{max-width:480px;margin:60px auto;text-align:center;font-family:'JetBrains Mono';font-size:13px;color:var(--red);line-height:1.6}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="gov-bar">
+    <span class="seal"><span class="seal-mark">§</span> <span id="divisionLabel">Emoji Compliance Division</span></span>
+    <span class="ref" id="articleLabel">Art. 752</span>
+  </div>
+  <section id="intro"></section>
+  <section id="quiz" class="hidden">
+    <div class="progress">
+      <span class="pmeta" id="pmeta"></span>
+      <div class="track"><div class="fill" id="fill"></div></div>
+    </div>
+    <div class="card" id="qcard"></div>
+  </section>
+  <section id="reg" class="hidden"></section>
+  <section id="results" class="hidden"></section>
+  <div class="brandfoot" id="brandfoot"></div>
+</div>
+<!-- hidden sink so the Google Form POST never navigates the page -->
+<iframe name="gform_sink" id="gform_sink" title="hidden" style="display:none" aria-hidden="true"></iframe>
+
+<script>
+/* =====================================================================
+   EMOJI COMPLIANCE QUIZ — CONTENT
+   ---------------------------------------------------------------------
+   This is the ONLY block you need to edit to change wording.
+   Limited HTML allowed inside text: <em>italic</em> and <b>bold</b>.
+   ===================================================================== */
+
+window.QUIZ_CONFIG = {
+
+  /* ---- Global settings the developer wires up ---- */
+  meta: {
+    division:    "Emoji Compliance Division",
+    article:     "Company Handbook",
+    brandFooter: "Hyperaction — “Emoji Etiquette” · presented on the Deel brand page",
+    prizeAmount: "$1,000",
+    entryCode:   "SLAY-752",
+    // Developer: set these two URLs. Leave blank to disable the button.
+    entryFormUrl: "",     // where "Claim my entry" sends a 10/10 winner
+    brandPageUrl: ""      // where "Watch the full episode" sends everyone
+  },
+
+  /* ---- Opening screen ---- */
+  intro: {
+    moduleTag:  "Mandatory Certification · People &amp; Culture",
+    titleHTML:  "The Emoji <em>Improvement</em> Plan",
+    lede:       "A reaction was filed against you. We'll keep this brief. Per the <strong>Company Handbook</strong>, all Slack reactions must be handbook-compliant. You will complete <strong>10 scenarios</strong> across two modules, and <strong>no result is disclosed until certification is complete.</strong>",
+    noticeHead: "⚠ Read before you begin",
+    noticeItems: [
+      "<b>Module 1 — Improvement Plan.</b> Five reactions pulled directly from your record.",
+      "<b>Module 2 — Final Quiz.</b> Five live scenarios. React in real time.",
+      "<b>Right or wrong stays sealed</b> until the end.",
+      "<b class=\"prize\">Score 10/10 and you're entered to win $1,000.</b> A clean record has its rewards."
+    ],
+    startBtn: "Begin certification →"
+  },
+
+  /* ---- Questions ----
+     who / av / time = the fake Slack message header
+     msg             = the Slack message
+     prompt          = the question line
+     options[]       = the 4 emoji choices
+        e        = the emoji
+        label    = short text under the emoji
+        correct  = true on exactly ONE option per question
+        by        = "greg" or "mina" (controls the avatar color)
+        name      = display name shown above the comment
+        line      = the comment shown when this emoji is picked
+  */
+  questions: [
+    {
+      module:1, tag:"Improvement Plan", chip:"From your record",
+      who:"@channel", av:"#", time:"9:02 AM",
+      msg:"As you may have heard, we were forced to make the difficult business decision of laying off two hundred of our esteemed family members yesterday.",
+      prompt:"You react with…",
+      options:[
+        {e:"👍", label:"Thumbs up",   correct:false, by:"greg", name:"Greg", line:"You cannot thumbs-up a layoff post. Two hundred esteemed family members and you give them <em>a thumbs up?</em>"},
+        {e:"🚀", label:"Rocket ship", correct:true,  by:"mina", name:"Mina", line:"To indicate this decision cuts dead weight and takes us to the moon."},
+        {e:"🍕", label:"Pizza",       correct:false, by:"greg", name:"Greg", line:"A layoff is not a pizza party. …Although. Is there pizza? No. Focus."},
+        {e:"❤️", label:"Heart",       correct:false, by:"mina", name:"Mina", line:"You <em>loved</em> a layoff. Bold. The handbook does not love this."}
+      ]
+    },
+    {
+      module:1, tag:"Improvement Plan", chip:"From your record",
+      who:"Sales", av:"S", time:"10:30 AM",
+      msg:"🎯 We are going to BEAT our Q1 goal — a full month early.",
+      prompt:"This achievement calls for…",
+      options:[
+        {e:"🙂", label:"Smiley",      correct:false, by:"greg", name:"Greg", line:"A smiley? They beat Q1 a MONTH early. That is not a smiley. That is a slay."},
+        {e:"💅", label:"Nail polish", correct:true,  by:"mina", name:"Mina", line:"It's a textbook slay. We don't make the rules. We <em>are</em> the rules."},
+        {e:"👍", label:"Thumbs up",   correct:false, by:"greg", name:"Greg", line:"We are NOT thumbs-upping a slay. Have you learned nothing in this room?"},
+        {e:"👏", label:"Clapping",    correct:false, by:"mina", name:"Mina", line:"Clapping is for webinars. This was a slay."}
+      ]
+    },
+    {
+      module:1, tag:"Improvement Plan", chip:"From your record",
+      who:"Bob (VP)", av:"B", time:"1:45 PM",
+      msg:"Huge shoutout to Marcus from Product, a key player on the onboarding launch. 🙌",
+      prompt:"You recognize Marcus with…",
+      options:[
+        {e:"🔥", label:"Fire",         correct:true,  by:"mina", name:"Mina", line:"Correct. Marcus shipped onboarding. Marcus is, and I quote the handbook, 'on fire.'"},
+        {e:"👀", label:"Eyes",         correct:false, by:"greg", name:"Greg", line:"Why are you <em>watching</em> Marcus? This is recognition, not surveillance."},
+        {e:"🤝", label:"Handshake",    correct:false, by:"mina", name:"Mina", line:"Transactional. We're celebrating Marcus, not closing a deal with him."},
+        {e:"😐", label:"Neutral face", correct:false, by:"greg", name:"Greg", line:"A neutral face for a key player? Marcus deserves heat. Give the man some heat."}
+      ]
+    },
+    {
+      module:1, tag:"Improvement Plan", chip:"From your record",
+      who:"Tanya (DM)", av:"T", time:"8:58 AM",
+      msg:"omg did you hear what happened with Tom and Megan after the happy hour last night??",
+      prompt:"You reply with…",
+      options:[
+        {e:"🍵", label:"Tea",            correct:true,  by:"mina", name:"Mina", line:"Correct. Tanya brought the tea. You acknowledge the tea. This is decorum."},
+        {e:"🙉", label:"Hear-no-evil",   correct:false, by:"greg", name:"Greg", line:"Don't you DARE hear-no-evil Tanya. She came to you in confidence and chaos."},
+        {e:"📢", label:"Megaphone",      correct:false, by:"mina", name:"Mina", line:"A megaphone? This is a DM. We sip the tea. We do not broadcast the tea."},
+        {e:"🤐", label:"Zipper mouth",   correct:false, by:"greg", name:"Greg", line:"Zipper mouth?! This IS the tea! You don't zip the tea! You POUR it!"}
+      ]
+    },
+    {
+      module:1, tag:"Improvement Plan", chip:"From your record",
+      who:"@here", av:"@", time:"12:15 PM",
+      msg:"🍕 Leftover pizza in the kitchen, first come first served!",
+      prompt:"You react with…",
+      options:[
+        {e:"🍕", label:"Pizza",        correct:false, by:"greg", name:"Greg", line:"Too literal. A pizza emoji for pizza? Where is the artistry. Where is the soul."},
+        {e:"🤌", label:"Italian hand", correct:true,  by:"greg", name:"Greg", line:"Ayyyyy. THAT is free-lunch energy, baby."},
+        {e:"🏃", label:"Running",      correct:false, by:"mina", name:"Mina", line:"Honest. But we'd rather HR not see how fast you'll move for free carbs."},
+        {e:"🤤", label:"Drooling",     correct:false, by:"mina", name:"Mina", line:"Visceral. Unprofessional. The handbook is, regrettably, dry on saliva."}
+      ]
+    },
+    {
+      module:2, tag:"Final Quiz", chip:"Live scenario",
+      who:"Dave", av:"D", time:"2:10 PM",
+      msg:"Big news, I just signed up to run my first marathon this fall! 🏃",
+      prompt:"How would you react?",
+      options:[
+        {e:"💪", label:"Muscle",   correct:true,  by:"mina", name:"Mina", line:"Correct. Effort gets the muscle. Supportive, encouraging, fully compliant."},
+        {e:"🔥", label:"Fire",     correct:false, by:"greg", name:"Greg", line:"Fire emoji? Dave is 51. Do not set Dave on fire."},
+        {e:"🏃", label:"Running",  correct:false, by:"greg", name:"Greg", line:"A running emoji. For running. We have been over literalism. Where is the imagination."},
+        {e:"💀", label:"Skull",    correct:false, by:"mina", name:"Mina", line:"The skull says you don't think Dave will make it. Unsupportive. Possibly accurate. Still unsupportive."}
+      ]
+    },
+    {
+      module:2, tag:"Final Quiz", chip:"Live scenario",
+      who:"Priya", av:"P", time:"3:20 PM",
+      msg:"Hi all, I'll be heading out on parental leave starting next month! 🍼",
+      prompt:"How would you react?",
+      options:[
+        {e:"❤️", label:"Heart",       correct:true,  by:"mina", name:"Mina", line:"Correct. Warm, supportive, fully compliant. We love a new parent."},
+        {e:"🫡", label:"Salute",      correct:false, by:"greg", name:"Greg", line:"A salute? She's having a baby, not shipping out to a war zone."},
+        {e:"😢", label:"Crying",      correct:false, by:"mina", name:"Mina", line:"Why are you crying? This is joyful news. Compose yourself in the channel."},
+        {e:"⏰",       label:"Alarm clock", correct:false, by:"greg", name:"Greg", line:"An alarm clock. Are you… counting down to her return? That's menacing."}
+      ]
+    },
+    {
+      module:2, tag:"Final Quiz", chip:"Live scenario",
+      who:"IT Helpdesk", av:"IT", time:"7:30 AM",
+      msg:"🔒 Mandatory password reset. Effective immediately. No exceptions.",
+      prompt:"How would you react?",
+      options:[
+        {e:"🫡", label:"Salute",     correct:true,  by:"mina", name:"Mina", line:"Correct. IT is the law. You salute the law. You do not negotiate with the law."},
+        {e:"👍", label:"Thumbs up",  correct:false, by:"greg", name:"Greg", line:"A thumbs-up to IT? They see EVERYTHING you do. Everything. Show some respect."},
+        {e:"🙄", label:"Eye roll",   correct:false, by:"greg", name:"Greg", line:"An eye roll at IT. Bold. Enjoy your next 'randomly selected' laptop audit."},
+        {e:"🤖", label:"Robot",      correct:false, by:"mina", name:"Mina", line:"Cheeky. IT did not find the robot joke funny. IT has never found anything funny."}
+      ]
+    },
+    {
+      module:2, tag:"Final Quiz", chip:"Live scenario",
+      who:"Devon", av:"D", time:"5:05 PM",
+      msg:"everyone meet Biscuit, the newest member of the team 🐶 (posted in #random)",
+      prompt:"How would you react?",
+      options:[
+        {e:"😍", label:"Heart eyes", correct:true,  by:"mina", name:"Mina", line:"Correct. The only acceptable response to a puppy is total emotional collapse. This is the muted version of that."},
+        {e:"🐶", label:"Dog",        correct:false, by:"greg", name:"Greg", line:"A dog emoji. For a dog. We covered this with the pizza. ELEVATE."},
+        {e:"📈", label:"Chart up",   correct:false, by:"greg", name:"Greg", line:"Did you just reply to a puppy with a growth chart? Touch grass. Touch the grass."},
+        {e:"🤷", label:"Shrug",      correct:false, by:"mina", name:"Mina", line:"A shrug. At a puppy. There is nothing in the handbook for emptiness this profound. See me after."}
+      ]
+    },
+    {
+      module:2, tag:"Final Quiz", chip:"Live scenario",
+      who:"Jordan", av:"J", time:"4:45 PM",
+      msg:"Today is my last day! It's been an incredible journey. Don't be strangers 🫶",
+      prompt:"How would you react?",
+      options:[
+        {e:"🙏", label:"Folded hands", correct:true,  by:"mina", name:"Mina", line:"Correct. Grateful, dignified, final. A clean send-off. We will forget Jordan by Thursday, but with grace."},
+        {e:"❤️", label:"Heart",        correct:false, by:"greg", name:"Greg", line:"A heart? You spoke to Jordan twice, both times about the printer. Don't fake-grieve in the channel."},
+        {e:"😭", label:"Loud cry",     correct:false, by:"greg", name:"Greg", line:"Sobbing? You once ate Jordan's labeled lunch from the fridge. Sit down."},
+        {e:"🎉", label:"Party popper", correct:false, by:"mina", name:"Mina", line:"A party popper on someone's last day reads as 'finally.' Even if accurate, we do not celebrate departures in writing."}
+      ]
+    }
+  ],
+
+  /* ---- Results screen ----
+     tiers are matched by score percentage, highest minPct first.
+     A perfect score (100%) always shows the prize block. */
+  results: {
+    scoreLabel: "Company Handbook · Final Score",
+    tiers: [
+      { minPct:100, rank:"Certified Emoji Compliance Officer", stamp:"Certified",  stampClass:"pass",
+        verdict:"Greg is speechless. Mina has updated your file to 'exemplary.' You reacted to every scenario exactly as the Company Handbook demands, including the layoff, which is frankly chilling. <b>You're eligible for the $1,000.</b>" },
+      { minPct:80,  rank:"Provisionally Compliant", stamp:"Under Review", stampClass:"",
+        verdict:"Mina: 'So close.' Greg: 'SO close.' One or two reactions slipped, and the draw only takes a spotless record. You were one tap from certified. Instead, you are 'fine.' Nobody frames 'fine.'" },
+      { minPct:50,  rank:"Improvement Plan: Recommended", stamp:"Flagged", stampClass:"",
+        verdict:"Greg has concerns. Mina has a folder. You're reacting from the heart, and the heart is not handbook-compliant. We'll see you back here for a refresher." },
+      { minPct:0,   rank:"Repeat Offender", stamp:"Flagged", stampClass:"",
+        verdict:"Mina: 'I, for one, do not love these reactions.' Greg: 'You thumbs-upped your way through a certification.' Report to HR. Bring snacks. Not pizza-emoji snacks. Real ones." }
+    ],
+    prizePerfect: {
+      head:  "🏆 Perfect record",
+      big:   "You're in for $1,000",
+      sub:   "Submit your entry code below to be entered into the draw. One clean record, one shot."
+    },
+    prizeImperfect: {
+      head:  "$1,000 draw",
+      bigTemplate: "{remaining} reaction{plural} away",   // {remaining} and {plural} are filled in automatically
+      sub:   "Only a flawless 10/10 record is eligible. Greg believes in you. Mina is neutral."
+    },
+    shareTextTemplate: "I scored {score}/{total} on Deel's Emoji Compliance Certification. Greg and Mina have opinions. 🚀💅🤌"
+  }
+};
+</script>
+
+<script>
+/* =====================================================================
+   GOOGLE FORM HOOK-UP  (lead capture -> Google Sheet)
+   ---------------------------------------------------------------------
+   Every player must enter Name, Email, Contact number and a Social
+   platform (+ handle) before their verdict is unlocked. Their score is
+   attached automatically and lands in the Sheet linked to your Form.
+
+   ONE-TIME SETUP (≈5 min):
+   1. Create a Google Form with these questions, IN ANY ORDER:
+        • Full name          -> "Short answer"
+        • Email              -> "Short answer"
+        • Contact number     -> "Short answer"
+        • Social platform    -> "Dropdown" with options EXACTLY:
+                                 TikTok, Instagram, X, LinkedIn
+        • Social handle      -> "Short answer"   (optional — see below)
+        • Score              -> "Short answer"
+      In the Form, click "Responses" -> the green Sheets icon to create
+      the linked spreadsheet. All submissions flow there automatically.
+
+   2. Get the field IDs (entry.xxxxxxx):
+        Form -> ⋮ (top-right) -> "Get pre-filled link" -> type a dummy
+        answer in EVERY field -> "Get link" -> "Copy link".
+        Paste that link somewhere; it looks like:
+          .../viewform?entry.1111111=John&entry.2222222=john@x.com&...
+        Each entry.NNNN belongs to the field you typed the dummy into.
+
+   3. Get the POST url:
+        Take your form's normal link (".../viewform") and replace
+        "viewform" with "formResponse". Put that in `action` below.
+
+   4. Paste the 6 entry IDs into `fields` below. Done.
+      Leave `action` empty to disable capture (quiz still runs).
+   ===================================================================== */
+window.GFORM = {
+  action: "https://docs.google.com/forms/d/e/1FAIpQLSfzeZyqlBhvAaKswhR6pb3s1NnUhLM2XgSE4Jzrn4mSgbU_UQ/formResponse",
+
+  fields: {
+    name:   "entry.1718962563",
+    email:  "entry.1230564962",
+    phone:  "entry.276050758",
+    social: "entry.232265903",    // the dropdown
+    handle: "entry.1971858284",   // optional — set to "" to hide the handle box
+    score:  "entry.488210965"
+  },
+
+  // Must match the Dropdown options in your Form EXACTLY (case-sensitive).
+  socialOptions: ["TikTok", "Instagram", "X", "LinkedIn"],
+
+  // How the score is written to the sheet: "fraction" -> "8/10",
+  // "number" -> "8", "percent" -> "80%".
+  scoreFormat: "fraction"
+};
+</script>
+
+<script>
+(function(){
+  const CFG = window.QUIZ_CONFIG;
+  const $ = id => document.getElementById(id);
+
+  if(!CFG || !Array.isArray(CFG.questions) || !CFG.questions.length){
+    document.body.innerHTML = '<div class="err">QUIZ_CONFIG failed to load. The content block must run before this script.</div>';
+    return;
+  }
+
+  // analytics hook — developer implements window.onQuizEvent if desired
+  function emit(name, data){ try{ if(typeof window.onQuizEvent==='function') window.onQuizEvent(name, data||{});}catch(e){} }
+
+  const Q = CFG.questions;
+  const GF = window.GFORM || {};
+  let idx=0, score=0, picked=[], selected=null;
+
+  function scoreValue(){
+    const total=Q.length;
+    if(GF.scoreFormat==='number')  return ''+score;
+    if(GF.scoreFormat==='percent') return Math.round(score/total*100)+'%';
+    return score+'/'+total;
+  }
+
+  // avatar color from a name (Slack-ish palette)
+  const AV_COLORS=['#4a154b','#1264a3','#007a5a','#cd2553','#9b59b6','#e8912d','#2c8c7c','#3b5fb0','#a8324a','#5b6168'];
+  function colorFor(s){ let h=0; s=s||''; for(let i=0;i<s.length;i++) h=(h*31+s.charCodeAt(i))>>>0; return AV_COLORS[h%AV_COLORS.length]; }
+
+  $('divisionLabel').textContent = CFG.meta.division;
+  $('articleLabel').textContent = CFG.meta.article;
+  $('brandfoot').textContent = CFG.meta.brandFooter;
+
+  // ---- intro ----
+  const intro = CFG.intro;
+  $('intro').innerHTML = `
+    <div class="module-tag">${intro.moduleTag}</div>
+    <h1>${intro.titleHTML}</h1>
+    <p class="lede">${intro.lede}</p>
+    <div class="notice">
+      <div class="notice-head">${intro.noticeHead}</div>
+      <ul>${intro.noticeItems.map(i=>`<li>${i}</li>`).join('')}</ul>
+    </div>
+    <button class="btn" id="startBtn">${intro.startBtn}</button>`;
+  $('startBtn').onclick = start;
+
+  function start(){
+    emit('quiz_start');
+    $('intro').classList.add('hidden');
+    $('quiz').classList.remove('hidden');
+    render();
+  }
+
+  function render(){
+    selected=null;
+    const q=Q[idx], total=Q.length;
+    $('fill').style.width=(idx/total*100)+'%';
+    $('pmeta').innerHTML=`Module ${q.module} · Q<b>${idx+1}</b>/${total}`;
+    const chipClass = q.module===2 ? 'chip final' : 'chip';
+    const opts=q.options.map((o,i)=>`
+      <button class="opt" data-i="${i}"><span class="e">${o.e}</span><span>${o.label}</span></button>`).join('');
+    $('qcard').innerHTML=`
+      <div class="qkicker"><span class="${chipClass}">${q.tag}</span> &nbsp;·&nbsp; ${q.chip}</div>
+      <div class="slack">
+        <div class="s-av" style="background:${colorFor(q.who)}">${(q.av||q.who||'?').slice(0,2)}</div>
+        <div class="s-body">
+          <div class="s-head"><span class="s-name">${q.who}</span><span class="s-time">${q.time}</span></div>
+          <div class="s-msg">${q.msg}</div>
+          <div class="s-rxns" id="srxns"></div>
+        </div>
+      </div>
+      <div class="qprompt">${q.prompt}</div>
+      <div class="opts" id="opts">${opts}</div>
+      <div id="reactionSlot"></div>
+      <div class="footrow">
+        <span class="nostalk" id="seal">🔒 Verdict sealed until certification ends</span>
+        <button class="btn" id="nextBtn" disabled>Next →</button>
+      </div>`;
+    [...$('opts').children].forEach(btn=> btn.onclick=()=>pick(parseInt(btn.dataset.i)));
+    $('nextBtn').onclick=next;
+  }
+
+  function pick(i){
+    if(selected!==null) return;
+    selected=i;
+    const q=Q[idx], o=q.options[i];
+    picked.push({q, chosen:i});
+    if(o.correct) score++;
+    emit('question_answered', {index:idx, emoji:o.e, correct:!!o.correct});
+    const optsEl=$('opts');
+    optsEl.classList.add('locked');
+    [...optsEl.children].forEach((b,bi)=> b.classList.add(bi===i?'sel':'dim'));
+    // drop the chosen emoji onto the Slack message as a reaction pill
+    $('srxns').innerHTML=`<span class="s-pill"><span class="pe">${o.e}</span> 1</span>`;
+    $('reactionSlot').innerHTML=`
+      <div class="reaction">
+        <div class="face ${o.by}">${(o.name||'?')[0]}</div>
+        <div class="body"><div class="name">${o.name} says</div><div class="line">${o.line}</div></div>
+      </div>`;
+    const next=$('nextBtn');
+    next.disabled=false;
+    if(idx===Q.length-1) next.textContent='See my verdict →';
+  }
+
+  function next(){
+    idx++;
+    if(idx>=Q.length){
+      // Collect details first (and ship the score) — then reveal the verdict.
+      if(GF.action) showRegistration(); else showResults();
+      return;
+    }
+    render();
+  }
+
+  // ---- registration / lead capture ----
+  function showRegistration(){
+    $('quiz').classList.add('hidden');
+    const F=GF.fields, opts=(GF.socialOptions||[]);
+    const handleField = F.handle ? `
+        <div class="field" id="f_handle">
+          <label>Handle <span class="req">*</span></label>
+          <input name="${F.handle}" id="i_handle" placeholder="@yourhandle" autocomplete="off">
+          <div class="msg">Add your handle.</div>
+        </div>` : '';
+    const reg=$('reg');
+    reg.classList.remove('hidden');
+    reg.innerHTML=`
+      <div class="reg">
+        <h2>One last step</h2>
+        <p class="sub">Log your certification to <b>unlock your verdict</b> and enter the ${CFG.meta.prizeAmount} draw. Your sealed score is attached to this entry automatically.</p>
+        <div class="scorenote">🔒 Score sealed — it travels with your entry. No peeking until you submit.</div>
+        <form id="regForm" action="${GF.action}" method="POST" target="gform_sink" novalidate autocomplete="on">
+          <div class="field" id="f_name">
+            <label>Full name <span class="req">*</span></label>
+            <input name="${F.name}" id="i_name" placeholder="Jordan Rivera" autocomplete="name">
+            <div class="msg">Enter your name.</div>
+          </div>
+          <div class="field" id="f_email">
+            <label>Email <span class="req">*</span></label>
+            <input name="${F.email}" id="i_email" type="email" placeholder="you@company.com" autocomplete="email">
+            <div class="msg">Enter a valid email address.</div>
+          </div>
+          <div class="field" id="f_phone">
+            <label>Contact number <span class="req">*</span></label>
+            <input name="${F.phone}" id="i_phone" type="tel" placeholder="+1 555 000 1234" autocomplete="tel">
+            <div class="msg">Enter a valid contact number.</div>
+          </div>
+          <div class="grid2">
+            <div class="field" id="f_social">
+              <label>Platform <span class="req">*</span></label>
+              <select name="${F.social}" id="i_social">
+                <option value="">Choose…</option>
+                ${opts.map(o=>`<option value="${o}">${o}</option>`).join('')}
+              </select>
+              <div class="msg">Pick one.</div>
+            </div>
+            ${handleField}
+          </div>
+          <input type="hidden" name="${F.score}" id="i_score" value="${scoreValue()}">
+          <button class="btn" id="regBtn" type="submit" style="width:100%;margin-top:6px">Reveal my verdict →</button>
+          <p class="privacy">Filed with the Emoji Compliance Division. We record your reactions, not your soul.</p>
+        </form>
+      </div>`;
+
+    const form=$('regForm'), sink=$('gform_sink');
+    let submitting=false, advanced=false;
+    function advance(){ if(advanced) return; advanced=true; reg.classList.add('hidden'); reg.innerHTML=''; showResults(); }
+    sink.onload=()=>{ if(submitting) advance(); };   // fires once the Form accepts the POST
+    form.addEventListener('submit',(e)=>{
+      if(!validateReg(F)){ e.preventDefault(); return; }
+      submitting=true;
+      const btn=$('regBtn'); btn.disabled=true; btn.textContent='Filing…';
+      $('i_score').value=scoreValue();
+      emit('entry_claimed', {score});   // user has submitted their details + score
+      // native submit posts to the hidden iframe; fallback in case onload is blocked
+      setTimeout(advance, 1800);
+    });
+  }
+
+  function setErr(id, bad){ const el=$(id); if(el) el.classList.toggle('err', bad); return !bad; }
+  function validateReg(F){
+    let ok=true;
+    ok = setErr('f_name',  $('i_name').value.trim().length<2) && ok;
+    ok = setErr('f_email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('i_email').value.trim())) && ok;
+    ok = setErr('f_phone', $('i_phone').value.replace(/[^\d]/g,'').length<7) && ok;
+    ok = setErr('f_social', !$('i_social').value) && ok;
+    if(F.handle && $('i_handle')) ok = setErr('f_handle', $('i_handle').value.trim().length<1) && ok;
+    return ok;
+  }
+
+  function pickTier(pct){
+    const tiers=[...CFG.results.tiers].sort((a,b)=>b.minPct-a.minPct);
+    return tiers.find(t=>pct>=t.minPct) || tiers[tiers.length-1];
+  }
+
+  function showResults(){
+    const total=Q.length, perfect=score===total, pct=Math.round(score/total*100);
+    emit('quiz_complete', {score, total, perfect});
+    $('quiz').classList.add('hidden');
+    $('fill').style.width='100%';
+    const R=CFG.results, tier=pickTier(pct);
+
+    const review = picked.map((p,n)=>{
+      const chosen=p.q.options[p.chosen];
+      const ok=!!chosen.correct;
+      return `<div class="rli"><span class="rq">Q${n+1} · ${p.q.who}</span>
+        <span class="ra ${ok?'ok':'no'}"><span class="mark">${ok?'✓':'✕'}</span></span></div>`;
+    }).join('');
+
+    let prizeBlock;
+    if(perfect){
+      const p=R.prizePerfect;
+      prizeBlock=`<div class="prizebox"><div class="ph">${p.head}</div>
+        <div class="pbig">${p.big}</div><div class="psub">${p.sub}</div>
+        <div class="code">ENTRY CODE: ${CFG.meta.entryCode}</div></div>`;
+    } else {
+      const rem=total-score, p=R.prizeImperfect;
+      const big=p.bigTemplate.replace('{remaining}',rem).replace('{plural}',rem===1?'':'s');
+      prizeBlock=`<div class="prizebox" style="border-style:solid;border-color:var(--line);background:#fafaf8">
+        <div class="ph" style="color:var(--ink-soft)">${p.head}</div>
+        <div class="pbig" style="font-size:22px">${big}</div><div class="psub">${p.sub}</div></div>`;
+    }
+
+    const claimBtn   = perfect ? '<button class="btn" id="claimBtn">Claim my entry →</button>' : '';
+    const brandBtn   = CFG.meta.brandPageUrl ? `<button class="btn ${perfect?'ghost':''}" id="brandBtn">Watch the full episode →</button>` : '';
+
+    $('results').classList.remove('hidden');
+    $('results').innerHTML=`
+      <div class="result">
+        <div class="stamp ${tier.stampClass}">${tier.stamp}</div>
+        <div class="score-num">${score}<span style="font-size:28px;color:var(--ink-soft)">/${total}</span></div>
+        <div class="score-of">${R.scoreLabel}</div>
+        <div class="rank">${tier.rank}</div>
+        <div class="verdict">${tier.verdict}</div>
+        ${prizeBlock}
+        <div class="reviewlist">${review}</div>
+        <div class="actions">
+          ${claimBtn}
+          <button class="btn ${perfect?'ghost':''}" id="retryBtn">Take it again</button>
+          <button class="btn ghost" id="shareBtn">Share my score</button>
+          ${brandBtn}
+        </div>
+      </div>`;
+
+    if($('claimBtn')) $('claimBtn').onclick=()=>{
+      emit('entry_claimed', {score});
+      if(CFG.meta.entryFormUrl) window.open(CFG.meta.entryFormUrl,'_blank');
+      else alert('Developer: set meta.entryFormUrl in QUIZ_CONFIG to your $1,000 entry form.');
+    };
+    if($('brandBtn')) $('brandBtn').onclick=()=>{ emit('brand_click'); window.open(CFG.meta.brandPageUrl,'_blank'); };
+    $('retryBtn').onclick=()=>{ idx=0;score=0;picked=[];selected=null; $('reg').classList.add('hidden'); $('reg').innerHTML=''; $('results').classList.add('hidden'); $('results').innerHTML=''; $('quiz').classList.remove('hidden'); render(); };
+    $('shareBtn').onclick=()=>{
+      emit('share');
+      const t=R.shareTextTemplate.replace('{score}',score).replace('{total}',total);
+      if(navigator.share){ navigator.share({text:t}).catch(()=>{}); }
+      else { if(navigator.clipboard) navigator.clipboard.writeText(t); alert('Score copied to clipboard.'); }
+    };
+  }
+})();
+</script>
+</body>
+</html>
