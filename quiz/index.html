@@ -49,7 +49,7 @@
   .notice-head{display:flex;align-items:center;gap:8px;font-family:'JetBrains Mono',monospace;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--amber);font-weight:700;margin-bottom:10px}
   .notice ul{list-style:none;display:flex;flex-direction:column;gap:9px}
   .notice li{font-size:14.5px;color:var(--ink-soft);padding-left:22px;position:relative;line-height:1.45}
-  .notice li:before{content:"\00A7";position:absolute;left:0;top:0;color:var(--accent);font-weight:700;font-family:'Archivo',sans-serif}
+  .notice li:before{content:"\2022";position:absolute;left:2px;top:0;color:var(--accent);font-weight:700;font-family:'Archivo',sans-serif}
   .notice li b{color:var(--ink)} .prize{font-family:'Archivo';font-weight:800}
   .btn{font-family:'Archivo',sans-serif;font-weight:800;font-size:16px;letter-spacing:.01em;background:var(--accent);color:#fff;border:none;border-radius:11px;padding:15px 26px;cursor:pointer;transition:transform .12s ease,box-shadow .12s ease,background .12s;box-shadow:0 8px 20px -10px var(--accent)}
   .btn:hover{transform:translateY(-1px);background:var(--accent-ink)} .btn:active{transform:translateY(0)}
@@ -111,8 +111,8 @@
   .reviewlist .rli{display:flex;gap:10px;align-items:baseline;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
   .reviewlist .rli .rq{flex:1;color:var(--ink-soft)} .reviewlist .rli .ra{font-weight:700;display:flex;align-items:center;gap:6px} .reviewlist .rli .mark{font-size:16px}
   .ok{color:var(--green)} .no{color:var(--red)}
+  .retake-note{max-width:430px;margin:-6px auto 22px;font-size:13.5px;line-height:1.5;color:var(--ink-soft);font-style:italic}
   .actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
-  .brandfoot{margin-top:30px;text-align:center;font-family:'JetBrains Mono';font-size:10.5px;letter-spacing:.1em;color:#9aa0ac;text-transform:uppercase}
 
   /* ---------- Registration form (collects details -> Google Form/Sheet) ---------- */
   .reg{background:var(--card);border:1px solid var(--line);border-radius:16px;box-shadow:var(--shadow);padding:26px 24px;animation:rise .4s ease both}
@@ -142,7 +142,7 @@
 <body>
 <div class="wrap">
   <div class="gov-bar">
-    <span class="seal"><span class="seal-mark">§</span> <span id="divisionLabel">Emoji Compliance Division</span></span>
+    <span class="seal"><span id="divisionLabel">Emoji Compliance Division</span></span>
     <span class="ref" id="articleLabel">Art. 752</span>
   </div>
   <section id="intro"></section>
@@ -155,7 +155,6 @@
   </section>
   <section id="reg" class="hidden"></section>
   <section id="results" class="hidden"></section>
-  <div class="brandfoot" id="brandfoot"></div>
 </div>
 <!-- hidden sink so the Google Form POST never navigates the page -->
 <iframe name="gform_sink" id="gform_sink" title="hidden" style="display:none" aria-hidden="true"></iframe>
@@ -174,8 +173,8 @@ window.QUIZ_CONFIG = {
   meta: {
     division:    "Emoji Compliance Division",
     article:     "Company Handbook",
-    brandFooter: "Hyperaction — “Emoji Etiquette” · presented on the Deel brand page",
-    prizeAmount: "$1,000",
+    brandFooter: "",
+    prizeAmount: "",
     entryCode:   "SLAY-752",
     // Developer: set these two URLs. Leave blank to disable the button.
     entryFormUrl: "",     // where "Claim my entry" sends a 10/10 winner
@@ -184,7 +183,7 @@ window.QUIZ_CONFIG = {
 
   /* ---- Opening screen ---- */
   intro: {
-    moduleTag:  "Mandatory Certification · People &amp; Culture",
+    moduleTag:  "Mandatory Certification",
     titleHTML:  "The Emoji <em>Improvement</em> Plan",
     lede:       "A reaction was filed against you. We'll keep this brief. Per the <strong>Company Handbook</strong>, all Slack reactions must be handbook-compliant. You will complete <strong>10 scenarios</strong> across two modules, and <strong>no result is disclosed until certification is complete.</strong>",
     noticeHead: "⚠ Read before you begin",
@@ -192,7 +191,7 @@ window.QUIZ_CONFIG = {
       "<b>Module 1 — Improvement Plan.</b> Five reactions pulled directly from your record.",
       "<b>Module 2 — Final Quiz.</b> Five live scenarios. React in real time.",
       "<b>Right or wrong stays sealed</b> until the end.",
-      "<b class=\"prize\">Score 10/10 and you're entered to win $1,000.</b> A clean record has its rewards."
+      "Survive all scenarios to enter the giveaway — win exciting surprises like a MacBook Pro, iPhone 17 Pro Max, or AirPods Pro."
     ],
     startBtn: "Begin certification →"
   },
@@ -339,23 +338,28 @@ window.QUIZ_CONFIG = {
     scoreLabel: "Company Handbook · Final Score",
     tiers: [
       { minPct:100, rank:"Certified Emoji Compliance Officer", stamp:"Certified",  stampClass:"pass",
-        verdict:"Greg is speechless. Mina has updated your file to 'exemplary.' You reacted to every scenario exactly as the Company Handbook demands, including the layoff, which is frankly chilling. <b>You're eligible for the $1,000.</b>" },
+        verdict:"You reacted to every scenario exactly as the Company Handbook demands. That's a textbook slay." },
       { minPct:80,  rank:"Provisionally Compliant", stamp:"Under Review", stampClass:"",
         verdict:"Mina: 'So close.' Greg: 'SO close.' One or two reactions slipped, and the draw only takes a spotless record. You were one tap from certified. Instead, you are 'fine.' Nobody frames 'fine.'" },
       { minPct:50,  rank:"Improvement Plan: Recommended", stamp:"Flagged", stampClass:"",
-        verdict:"Greg has concerns. Mina has a folder. You're reacting from the heart, and the heart is not handbook-compliant. We'll see you back here for a refresher." },
+        verdict:"You're reacting from the heart, and the heart is not handbook-compliant. We'll see you back here after the refresher." },
       { minPct:0,   rank:"Repeat Offender", stamp:"Flagged", stampClass:"",
         verdict:"Mina: 'I, for one, do not love these reactions.' Greg: 'You thumbs-upped your way through a certification.' Report to HR. Bring snacks. Not pizza-emoji snacks. Real ones." }
     ],
-    prizePerfect: {
-      head:  "🏆 Perfect record",
-      big:   "You're in for $1,000",
-      sub:   "Submit your entry code below to be entered into the draw. One clean record, one shot."
-    },
-    prizeImperfect: {
-      head:  "$1,000 draw",
-      bigTemplate: "{remaining} reaction{plural} away",   // {remaining} and {plural} are filled in automatically
-      sub:   "Only a flawless 10/10 record is eligible. Greg believes in you. Mina is neutral."
+    // Winners are drawn afterwards from the Google Sheet — only 10/10 entries
+    // are eligible. "perfect" shows for a 10/10 score, "other" for everyone else.
+    giveaway: {
+      perfect: {
+        head: "🎉 You're in",
+        big:  "🎁 Mystery Gift Unlocked",
+        sub:  "Congratulations, you're eligible. Your score has been submitted. Fingers crossed."
+      },
+      other: {
+        head: "The Giveaway",
+        big:  "🎁 Win a Mystery Gift",
+        sub:  "Only a flawless 10/10 is entered.",
+        note: "Greg's advice: re-watch the episode, complete your training, and come back when you're ready for a clean sweep."
+      }
     },
     shareTextTemplate: "I scored {score}/{total} on Deel's Emoji Compliance Certification. Greg and Mina have opinions. 🚀💅🤌"
   }
@@ -417,6 +421,7 @@ window.GFORM = {
 };
 </script>
 
+
 <script>
 (function(){
   const CFG = window.QUIZ_CONFIG;
@@ -447,7 +452,6 @@ window.GFORM = {
 
   $('divisionLabel').textContent = CFG.meta.division;
   $('articleLabel').textContent = CFG.meta.article;
-  $('brandfoot').textContent = CFG.meta.brandFooter;
 
   // ---- intro ----
   const intro = CFG.intro;
@@ -545,7 +549,7 @@ window.GFORM = {
     reg.innerHTML=`
       <div class="reg">
         <h2>One last step</h2>
-        <p class="sub">Log your certification to <b>unlock your verdict</b> and enter the ${CFG.meta.prizeAmount} draw. Your sealed score is attached to this entry automatically.</p>
+        <p class="sub">Log your certification to <b>unlock your verdict</b>. Only a flawless 10/10 qualifies for a <b>mystery gift</b>. Your sealed score is attached to this entry automatically.</p>
         <div class="scorenote">🔒 Score sealed — it travels with your entry. No peeking until you submit.</div>
         <form id="regForm" action="${GF.action}" method="POST" target="gform_sink" novalidate autocomplete="on">
           <div class="field" id="f_name">
@@ -559,7 +563,7 @@ window.GFORM = {
             <div class="msg">Enter a valid email address.</div>
           </div>
           <div class="field" id="f_phone">
-            <label>Contact number <span class="req">*</span></label>
+            <label>Contact number <span style="color:var(--ink-faint);font-weight:400;text-transform:none;letter-spacing:0">(optional)</span></label>
             <input name="${F.phone}" id="i_phone" type="tel" placeholder="+1 555 000 1234" autocomplete="tel">
             <div class="msg">Enter a valid contact number.</div>
           </div>
@@ -600,7 +604,6 @@ window.GFORM = {
     let ok=true;
     ok = setErr('f_name',  $('i_name').value.trim().length<2) && ok;
     ok = setErr('f_email', !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test($('i_email').value.trim())) && ok;
-    ok = setErr('f_phone', $('i_phone').value.replace(/[^\d]/g,'').length<7) && ok;
     ok = setErr('f_social', !$('i_social').value) && ok;
     if(F.handle && $('i_handle')) ok = setErr('f_handle', $('i_handle').value.trim().length<1) && ok;
     return ok;
@@ -609,6 +612,155 @@ window.GFORM = {
   function pickTier(pct){
     const tiers=[...CFG.results.tiers].sort((a,b)=>b.minPct-a.minPct);
     return tiers.find(t=>pct>=t.minPct) || tiers[tiers.length-1];
+  }
+
+  // ---- downloadable Instagram-Story result card (1080x1920, no dependencies) ----
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+  function wrapText(ctx,text,x,y,maxW,lh){
+    const words=String(text).split(' '); let line=''; const lines=[];
+    for(const w of words){ const t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW && line){ lines.push(line); line=w; } else line=t; }
+    if(line) lines.push(line);
+    lines.forEach((l,i)=> ctx.fillText(l, x, y+i*lh));   // top-anchored: first line baseline at y
+    return lines.length;
+  }
+  function countLines(ctx,text,maxW){
+    const words=String(text).split(' '); let line='', n=0;
+    for(const w of words){ const t=line?line+' '+w:w; if(ctx.measureText(t).width>maxW && line){ n++; line=w; } else line=t; }
+    if(line) n++;
+    return n||1;
+  }
+  function drawStamp(ctx,cx,cy,text,color){
+    ctx.save();
+    ctx.translate(cx,cy); ctx.rotate(-8*Math.PI/180);
+    ctx.font='900 40px Archivo, sans-serif';
+    const tw=ctx.measureText(text).width, padX=30, padY=18, bw=tw+padX*2, bh=40+padY*2;
+    ctx.lineWidth=6; ctx.strokeStyle=color;
+    roundRect(ctx,-bw/2,-bh/2,bw,bh,14); ctx.stroke();
+    ctx.fillStyle=color; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(text,0,2);
+    ctx.restore();
+    ctx.textBaseline='alphabetic'; ctx.textAlign='center';
+  }
+
+  async function downloadResultCard(tier){
+    emit('share');
+    const total=Q.length;
+    const W=1080, H=1920;
+    const cv=document.createElement('canvas'); cv.width=W; cv.height=H;
+    const ctx=cv.getContext('2d');
+    try{
+      await document.fonts.load('900 300px Archivo');
+      await document.fonts.load('700 30px "JetBrains Mono"');
+      await document.fonts.load('700 46px Lato');
+      await document.fonts.ready;
+    }catch(e){}
+
+    const perfect = score===total;
+    const bg = perfect ? '#1d7a4d' : '#bb2d23';   // whole card: green for 10/10, red for below
+    const ink='#ffffff', soft='rgba(255,255,255,0.86)', accent='#ffffff', line='rgba(255,255,255,0.30)';
+    const stampColor='#ffffff';
+    const g = perfect ? CFG.results.giveaway.perfect : CFG.results.giveaway.other;
+    const verdict = String(tier.verdict).replace(/<[^>]+>/g,'');          // strip <b>/<em>
+    const scoreLabel = (CFG.results.scoreLabel||'Final Score');
+
+    // glow background + faded watermark emoji
+    const gr=ctx.createRadialGradient(540,780,120,540,1000,1150);
+    if(perfect){ gr.addColorStop(0,'#2a9568'); gr.addColorStop(1,'#13593a'); }
+    else { gr.addColorStop(0,'#cf3b2d'); gr.addColorStop(1,'#9a1c13'); }
+    ctx.fillStyle=gr; ctx.fillRect(0,0,W,H);
+    ctx.save(); ctx.globalAlpha=0.10; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.font='720px Lato, "Apple Color Emoji"'; ctx.fillText(perfect?'💅':'🚀', 540, 1010);
+    ctx.restore(); ctx.textBaseline='alphabetic'; ctx.textAlign='center';
+
+    const cx=56, cy=56, cw=W-112, ch=H-112, midX=W/2, maxW=cw-110;
+    roundRect(ctx,cx,cy,cw,ch,46); ctx.lineWidth=3; ctx.strokeStyle=line; ctx.stroke();
+    ctx.textAlign='center';
+
+    // ---- Full-Stack layout: bigger type filling the whole card top-to-bottom ----
+    const LHbig=66, LHbody=50;
+    ctx.font='400 40px Lato, sans-serif';     const nVer=countLines(ctx, verdict, maxW);
+    ctx.font='800 60px Archivo, sans-serif';  const nBig=countLines(ctx, g.big, maxW);
+    ctx.font='400 40px Lato, sans-serif';     const nSub=countLines(ctx, g.sub, maxW);
+    let nNote=0; if(g.note){ ctx.font='400 40px Lato, sans-serif'; nNote=countLines(ctx, g.note, maxW); }
+    const hHead=40, hScoreB=170, hEmoji=120;
+    const hGive = 56 + nBig*LHbig + nSub*LHbody + (nNote ? 20 + nNote*LHbody : 0);
+    const hVer  = nVer*LHbody;
+
+    const arr=[hHead, hScoreB, hGive, hVer, hEmoji];
+    const tot=arr.reduce((a,b)=>a+b,0);
+    const aTop=cy+74, aBot=cy+ch-64;
+    const gap=Math.max(12,(aBot-aTop-tot)/(arr.length-1));
+    let y=aTop;
+
+    // header + divider rule
+    ctx.fillStyle=accent; ctx.font='700 30px "JetBrains Mono", monospace';
+    ctx.fillText('EMOJI COMPLIANCE DIVISION', midX, y+28, maxW);
+    ctx.strokeStyle=line; ctx.lineWidth=2; ctx.beginPath(); ctx.moveTo(cx+150, y+58); ctx.lineTo(cx+cw-150, y+58); ctx.stroke();
+    y += hHead + gap;
+
+    // score
+    {
+      const numStr=''+score, denStr='/'+total;
+      ctx.font='900 200px Archivo, sans-serif'; const numW=ctx.measureText(numStr).width;
+      ctx.font='900 84px Archivo, sans-serif';  const denW=ctx.measureText(denStr).width;
+      const sx=midX-(numW+denW)/2;
+      ctx.textAlign='left';
+      ctx.fillStyle=ink;  ctx.font='900 200px Archivo, sans-serif'; ctx.fillText(numStr, sx, y+150);
+      ctx.fillStyle=soft; ctx.font='900 84px Archivo, sans-serif';  ctx.fillText(denStr, sx+numW, y+150);
+      ctx.textAlign='center';
+      drawStamp(ctx, sx, y-46, String(tier.stamp).toUpperCase(), stampColor);   // stamp above top-left of score
+    }
+    y += hScoreB + gap;
+
+    // giveaway (hero)
+    {
+      let c=y;
+      ctx.fillStyle=accent; ctx.font='700 32px "JetBrains Mono", monospace';
+      ctx.fillText(String(g.head).toUpperCase(), midX, c+30, maxW); c+=52;
+      ctx.fillStyle=ink; ctx.font='800 60px Archivo, sans-serif';
+      c += wrapText(ctx, g.big, midX, c+54, maxW, LHbig)*LHbig + 6;
+      ctx.fillStyle=soft; ctx.font='400 40px Lato, sans-serif';
+      c += wrapText(ctx, g.sub, midX, c+34, maxW, LHbody)*LHbody;
+      if(g.note){ c+=20; ctx.fillStyle=soft; ctx.font='400 40px Lato, sans-serif';
+        wrapText(ctx, g.note, midX, c+34, maxW, LHbody); }
+    }
+    y += hGive + gap;
+
+    // verdict
+    ctx.fillStyle=soft; ctx.font='400 40px Lato, sans-serif';
+    wrapText(ctx, verdict, midX, y+34, maxW, LHbody);
+    y += hVer + gap;
+
+    // emoji
+    ctx.font='110px Lato, "Apple Color Emoji", sans-serif';
+    ctx.fillText(perfect ? '💅' : '🚀', midX, y+92);
+
+    await new Promise((resolve)=>{
+      cv.toBlob(async (blob)=>{
+        if(!blob){ resolve(); return; }
+        const fname='emoji-compliance-score.png';
+        try{
+          const file=new File([blob], fname, {type:'image/png'});
+          if(navigator.canShare && navigator.canShare({files:[file]})){
+            await navigator.share({files:[file], title:'My Emoji Compliance Score'});
+            resolve(); return;
+          }
+        }catch(e){ /* sharing cancelled or unsupported — fall back to download */ }
+        const url=URL.createObjectURL(blob);
+        const a=document.createElement('a'); a.href=url; a.download=fname;
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(()=>URL.revokeObjectURL(url), 1500);
+        resolve();
+      }, 'image/png');
+    });
   }
 
   function showResults(){
@@ -625,22 +777,12 @@ window.GFORM = {
         <span class="ra ${ok?'ok':'no'}"><span class="mark">${ok?'✓':'✕'}</span></span></div>`;
     }).join('');
 
-    let prizeBlock;
-    if(perfect){
-      const p=R.prizePerfect;
-      prizeBlock=`<div class="prizebox"><div class="ph">${p.head}</div>
-        <div class="pbig">${p.big}</div><div class="psub">${p.sub}</div>
-        <div class="code">ENTRY CODE: ${CFG.meta.entryCode}</div></div>`;
-    } else {
-      const rem=total-score, p=R.prizeImperfect;
-      const big=p.bigTemplate.replace('{remaining}',rem).replace('{plural}',rem===1?'':'s');
-      prizeBlock=`<div class="prizebox" style="border-style:solid;border-color:var(--line);background:#fafaf8">
-        <div class="ph" style="color:var(--ink-soft)">${p.head}</div>
-        <div class="pbig" style="font-size:22px">${big}</div><div class="psub">${p.sub}</div></div>`;
-    }
+    const g = perfect ? R.giveaway.perfect : R.giveaway.other;
+    const prizeBlock=`<div class="prizebox"><div class="ph">${g.head}</div>
+        <div class="pbig">${g.big}</div><div class="psub">${g.sub}</div></div>`
+      + (g.note ? `<div class="retake-note">${g.note}</div>` : '');
 
-    const claimBtn   = perfect ? '<button class="btn" id="claimBtn">Claim my entry →</button>' : '';
-    const brandBtn   = CFG.meta.brandPageUrl ? `<button class="btn ${perfect?'ghost':''}" id="brandBtn">Watch the full episode →</button>` : '';
+    const brandBtn = CFG.meta.brandPageUrl ? `<button class="btn ghost" id="brandBtn">Watch the full episode →</button>` : '';
 
     $('results').classList.remove('hidden');
     $('results').innerHTML=`
@@ -653,25 +795,17 @@ window.GFORM = {
         ${prizeBlock}
         <div class="reviewlist">${review}</div>
         <div class="actions">
-          ${claimBtn}
-          <button class="btn ${perfect?'ghost':''}" id="retryBtn">Take it again</button>
-          <button class="btn ghost" id="shareBtn">Share my score</button>
+          <button class="btn" id="downloadBtn">Download result card</button>
           ${brandBtn}
         </div>
       </div>`;
 
-    if($('claimBtn')) $('claimBtn').onclick=()=>{
-      emit('entry_claimed', {score});
-      if(CFG.meta.entryFormUrl) window.open(CFG.meta.entryFormUrl,'_blank');
-      else alert('Developer: set meta.entryFormUrl in QUIZ_CONFIG to your $1,000 entry form.');
-    };
     if($('brandBtn')) $('brandBtn').onclick=()=>{ emit('brand_click'); window.open(CFG.meta.brandPageUrl,'_blank'); };
-    $('retryBtn').onclick=()=>{ idx=0;score=0;picked=[];selected=null; $('reg').classList.add('hidden'); $('reg').innerHTML=''; $('results').classList.add('hidden'); $('results').innerHTML=''; $('quiz').classList.remove('hidden'); render(); };
-    $('shareBtn').onclick=()=>{
-      emit('share');
-      const t=R.shareTextTemplate.replace('{score}',score).replace('{total}',total);
-      if(navigator.share){ navigator.share({text:t}).catch(()=>{}); }
-      else { if(navigator.clipboard) navigator.clipboard.writeText(t); alert('Score copied to clipboard.'); }
+    $('downloadBtn').onclick=()=>{
+      const btn=$('downloadBtn'); const label=btn.textContent;
+      btn.disabled=true; btn.textContent='Generating…';
+      downloadResultCard(tier).then(()=>{ btn.disabled=false; btn.textContent=label; })
+        .catch(()=>{ btn.disabled=false; btn.textContent=label; });
     };
   }
 })();
